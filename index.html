@@ -7,7 +7,7 @@
     <title>Hilda Login</title>
     <script src="https://unpkg.com/@rive-app/canvas@2.17.3"></script>
     <link rel="stylesheet" type="text/css" href="./style/style.css" />
-    <link rel="icon" type="image/x-icon" href="/img/HildaIcon.png">
+    <link rel="icon" type="image/x-icon" href="./img/HildaIcon.png">
 </head>
 
 <body>
@@ -50,7 +50,7 @@
     passwordInput.addEventListener("input", chackSubmit)
     // Initialize the Rive animation
     const r = new rive.Rive({
-        src: "/HildaAni.riv", // Ensure this path is correct and accessible
+        src: "./HildaAni.riv", // Ensure this path is correct and accessible
         canvas: document.getElementById("canvas"),
         autoplay: true,
         stateMachines: ["HildaControl"], // Must be an array
