@@ -47,7 +47,12 @@
     }
 
     usernameInput.addEventListener("input", chackSubmit);
-    passwordInput.addEventListener("input", chackSubmit)
+    passwordInput.addEventListener("input", chackSubmit);
+
+        usernameInput.addEventListener('keyup', function (event) {
+        const max = usernameInput.maxLength;
+    event.target.value = event.target.value.substring(0, max)
+})
     // Initialize the Rive animation
     const r = new rive.Rive({
         src: "./HildaAni.riv", // Ensure this path is correct and accessible
