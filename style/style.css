@@ -1,0 +1,75 @@
+@import url('https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
+
+body, input, button{
+    font-family: "Rubik",Arial, Helvetica, sans-serif;
+}
+
+body{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+}
+
+label{
+    font-weight: 600;
+}
+
+input:not(:last-child){
+margin-bottom: 10px;
+}
+
+
+input[type="text"],
+input[type="Password"]{
+    max-width: 80vw;
+    border: 2px solid black;
+    border-radius: 3px;
+    background: #fef9ef;
+    }
+
+button{
+    width: 100%;
+    background: #47b9bb;
+    padding: 0.4em;
+    border-radius: 3px;
+    border: none;
+    color: white;
+    transition: transform 150ms linear;
+}
+
+button:not(:disabled):hover,
+button:not(:disabled):focus-visible{
+    background: #3c9c9e;
+}
+
+button:not(:disabled):active{  
+    transform: scale(0.95);
+}
+button:disabled{
+    opacity: 0.5;
+}
+
+.inputCon{
+    margin: auto;
+    display: block;
+    width: fit-content;
+}
+.inputCon *{
+    display: block;
+}
+.canvasCon{
+    position: relative;
+    width: min(90%, 250px);
+    margin: auto;
+}
+.canvasCon canvas{
+    width: 100%;
+}
+#centerPosition{
+    position: absolute;
+    top: 20%;
+    left: 60%;
+    transform: translate(-50%, -50%);
+}

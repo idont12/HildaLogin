@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hilda Login</title>
+    <script src="https://unpkg.com/@rive-app/canvas@2.17.3"></script>
+    <link rel="stylesheet" type="text/css" href="./style/style.css" />
+    <link rel="icon" type="image/x-icon" href="/img/HildaIcon.png">
+</head>
+
+<body>
+    <div>
+        <div class="canvasCon">
+            <div id="centerPosition"></div>
+            <canvas id="canvas" width="500" height="500">
+            </canvas>
+        </div>
+
+        <div class="inputCon">
+            <label for="UserName">Username</label>
+            <input id="UserName" maxlength="15" name="UserName" type="text" />
+
+            <label for="Password">Password</label>
+            <input id="Password" name="Password" type="password" />
+
+            <button id="submitButton" type="button" onclick="fackSubmit()" disabled>Login</button>
+        </div>
+    </div>
+
+</body>
+
+<script>
+    const usernameInput = document.getElementById('UserName');
+    const passwordInput = document.getElementById('Password');
+    function fackSubmit() {
+        usernameInput.value = "";
+        passwordInput.value = "";
+
+        alert("This is a fake login page, so why did you press login?\nFor now, I will reset the form for you.");
+    }
+
+    function chackSubmit() {
+        let isActive = usernameInput.value.length > 0 && passwordInput.value.length > 0;
+        document.getElementById("submitButton").disabled = !isActive;
+    }
+
+    usernameInput.addEventListener("input", chackSubmit);
+    passwordInput.addEventListener("input", chackSubmit)
+    // Initialize the Rive animation
+    const r = new rive.Rive({
+        src: "/HildaAni.riv", // Ensure this path is correct and accessible
+        canvas: document.getElementById("canvas"),
+        autoplay: true,
+        stateMachines: ["HildaControl"], // Must be an array
+        onLoad: () => {
+            console.log("Rive animation loaded!");
+
+            // Resize canvas to match the drawing surface
+            r.resizeDrawingSurfaceToCanvas();
+
+            // Access and log state machine inputs
+            const stateMachineInputs = r.stateMachineInputs("HildaControl");
+            console.log("Available inputs:", stateMachineInputs);
+
+            let hildaMode = 0;//0 is look at mouse | 1 is foucse on user name | 2 is foucse on passord
+
+            const mouseX = stateMachineInputs.find(input => input.name === "Xaxis");
+            const mouseY = stateMachineInputs.find(input => input.name === "Yaxis");
+
+            //#region eye track mouse
+            function calculateScaledDistance(mouseX, mouseY, element) {
+                // Get the bounding box of the element
+                const rect = element.getBoundingClientRect();
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height / 2;
+
+                // Calculate the distance
+                const dx = mouseX - centerX;
+                const dy = mouseY - centerY;
+
+                // Scale the values to fit between -100 and 100
+                const maxDistanceX = document.getElementsByTagName("body")[0].getBoundingClientRect().width / 2;
+                const maxDistanceY = document.getElementsByTagName("body")[0].getBoundingClientRect().height / 2;
+
+                const scaledX = Math.max(-100, Math.min(100, (dx / maxDistanceX) * 100));
+                const scaledY = Math.max(-100, Math.min(100, (dy / maxDistanceY) * 100)) * -1;
+
+                return { x: Math.round(scaledX), y: Math.round(scaledY) };
+            }
+
+            document.addEventListener("mousemove", (event) => {
+                if (hildaMode != 0) {
+                    return;
+                }
+                const eyeElement = document.getElementById("centerPosition");
+                const { x, y } = calculateScaledDistance(event.clientX, event.clientY, eyeElement);
+                mouseX.value = x;
+                mouseY.value = y;
+            })
+
+            //#endregion
+
+            const hildaModes = stateMachineInputs.find(input => input.name === "CharacterModes");
+
+            function updateHildaMode(value) {
+                hildaModes.value = value;
+                hildaMode = value;
+            }
+
+            //#region Username input section
+
+            const usernameInput = document.getElementById('UserName');
+
+            // Add event listeners for input and click events
+            usernameInput.addEventListener("focus", () => {
+                updateHildaMode(1);
+            });
+            usernameInput.addEventListener("blur", () => {
+                updateHildaMode(0);
+            });
+            usernameInput.addEventListener('input', updateCursorPosition);
+            usernameInput.addEventListener('click', updateCursorPosition);
+            usernameInput.addEventListener('keyup', updateCursorPosition);
+
+            //find the number between two value acording to given precentage.
+            function percentageToCustomRange(percentage, min, max) {
+                if (percentage < 0 || percentage > 100) {
+                    throw new Error("Percentage must be between 0 and 100.");
+                }
+                return min + percentage * (max - min);
+            }
+
+            let runAnimation = false;
+            let EndAnimationNow = false;
+            // Function to calculate and display the cursor position
+            function updateCursorPosition() {
+                const cursorPosition = usernameInput.selectionStart;
+
+                const maxlength = usernameInput.maxLength;
+                const progress = cursorPosition / maxlength;
+                const value = percentageToCustomRange(progress, -80, 80);
+
+                // mouseX.value = value;
+                animationXTargert = value;
+                if(runAnimation==false){
+                    animateResultCount(mouseX.value,value);
+                }
+                runAnimation = false;
+            }
+
+            let animationXTargert = 0;
+            
+            function animateResultCount(number) {
+                runAnimation = true;
+
+                if (number < animationXTargert) {
+                    var interval = setInterval(function () {
+                        mouseX.value = number;
+                        if (number >= animationXTargert) {
+                            clearInterval(interval);
+                            return;
+                        }
+                        number++;
+                    }, 1);
+                }
+                if (animationXTargert < number) {
+                    var interval = setInterval(function () {
+                        mouseX.value = number;
+                        if (animationXTargert >= number) {
+                            clearInterval(interval);
+                            return;
+                        }
+                        number--;
+                    }, 1);
+                }
+            }
+            //#endregion
+
+            //#region Password input section
+            const passwordInput = document.getElementById('Password');
+            const hideHildaToggle = stateMachineInputs.find(input => input.name === "HideCharacter");
+
+            passwordInput.addEventListener("focus", () => {
+                updateHildaMode(2);
+                hideHildaToggle.value = true;
+
+            });
+
+            passwordInput.addEventListener("blur", () => {
+                updateHildaMode(0);
+                hideHildaToggle.value = false;
+
+            });
+
+            //#endregion
+
+        }
+
+
+    });
+</script>
+
+</html>
