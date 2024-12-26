@@ -105,6 +105,19 @@
                 mouseY.value = y;
             })
 
+                        document.addEventListener('touchmove', (e) => {
+                if (hildaMode != 0) {
+                    return;
+                }
+
+            const touch = e.touches[0];
+            const eyeElement = document.getElementById("centerPosition");
+                const { x, y } = calculateScaledDistance( touch.clientX, touch.clientY, eyeElement);
+                mouseX.value = x;
+                mouseY.value = y;
+            });
+
+
             //#endregion
 
             const hildaModes = stateMachineInputs.find(input => input.name === "CharacterModes");
