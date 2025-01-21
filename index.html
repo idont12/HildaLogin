@@ -86,8 +86,8 @@
                 const dy = mouseY - centerY;
 
                 // Scale the values to fit between -100 and 100
-                const maxDistanceX = document.getElementsByTagName("body")[0].getBoundingClientRect().width / 2;
-                const maxDistanceY = document.getElementsByTagName("body")[0].getBoundingClientRect().height / 2;
+                const maxDistanceX = document.getElementsByTagName("body")[0].getBoundingClientRect().width / 3;
+                const maxDistanceY = document.getElementsByTagName("body")[0].getBoundingClientRect().height / 3;
 
                 const scaledX = Math.max(-100, Math.min(100, (dx / maxDistanceX) * 100));
                 const scaledY = Math.max(-100, Math.min(100, (dy / maxDistanceY) * 100)) * -1;
